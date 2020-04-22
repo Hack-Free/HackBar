@@ -151,6 +151,10 @@ function execute() {
     if(method === 'GET'){
         let code = 'const url = "'+ encodeURIComponent(url) +'";';
         code += 'window.location.href = decodeURIComponent(url);';
+		
+        if(uri.hash !== '')
+			code += 'window.location.reload(true);';
+		
         browser.devtools.inspectedWindow.eval(code, function(result, isException){
             setTimeout( () => { currentFocusField.focus() }, 100 );
         });
