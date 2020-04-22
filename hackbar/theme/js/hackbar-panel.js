@@ -149,6 +149,8 @@ function execute() {
         return;
     }
     if(method === 'GET'){
+        let uri = new URL(url);
+        
         let code = 'const url = "'+ encodeURIComponent(url) +'";';
         code += 'window.location.href = decodeURIComponent(url);';
 		
