@@ -101,6 +101,22 @@ function rewriteHeaders(e) {
             });
         }
     }
+    // custom header
+    if (headers.custom) {
+        for(let header in headers.custom) {
+            let found = e.requestHeaders.find(element => element.name === header);
+
+            if(found !== undefined)
+                e.requestHeaders[found].value = headers.custom[header];
+            else
+                e.requestHeaders.push({
+                    name: header,
+                    value: headers.custom[header]
+                });
+        }
+
+        console.log(e.requestHeaders);
+    }
     return {requestHeaders: e.requestHeaders};
 }
 
@@ -110,13 +126,16 @@ function getCurrentHeaders( e ) {
         function (tabArray) {
             const currentTabId = tabArray[0].id;
             let _headers = [];
+            _headers.custom = [];
             for( let h of e.requestHeaders ) {
-                if( h.name.toLowerCase() == 'referer' ) {
+                if( h.name.toLowerCase() === 'referer' ) {
                     _headers.referer = h.value;
-                }else if( h.name.toLowerCase() == 'user-agent' ) {
+                } else if( h.name.toLowerCase() === 'user-agent' ) {
                     _headers.user_agent = h.value;
-                }else if( h.name.toLowerCase() == 'cookie' ) {
+                } else if( h.name.toLowerCase() === 'cookie' ) {
                     _headers.cookie = h.value;
+                } else {
+                    _headers.custom[h.name] = h.value;
                 }
             }
             curentHeaders[currentTabId] = _headers;

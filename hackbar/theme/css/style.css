@@ -4,10 +4,12 @@
 	transition: background-color .2s ease-out;
 }
 #post_data_field {
-	height: 120px;
+  height: 120px;
+  max-width: 100%;
 }
 #url_field{
-	height: 70px;
+  height: 70px;
+  max-width: 100%;
 }
 
 #url_field[contenteditable=true], #post_data_field[contenteditable=true] {
