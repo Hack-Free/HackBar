@@ -104,9 +104,9 @@ function rewriteHeaders(e) {
     // custom header
     if (headers.custom) {
         for(let header in headers.custom) {
-            let found = e.requestHeaders.find(element => element.name === header);
+            let found = e.requestHeaders.findIndex(element => element.name === header);
 
-            if(found !== undefined)
+            if(found !== -1)
                 e.requestHeaders[found].value = headers.custom[header];
             else
                 e.requestHeaders.push({
@@ -114,8 +114,6 @@ function rewriteHeaders(e) {
                     value: headers.custom[header]
                 });
         }
-
-        console.log(e.requestHeaders);
     }
     return {requestHeaders: e.requestHeaders};
 }
