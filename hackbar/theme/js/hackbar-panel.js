@@ -52,7 +52,7 @@ function getFieldFormData(dataString) {
 }
 
 function urlEncode(inputStr) {
-    return encodeURIComponent(inputStr).toLowerCase();
+    return encodeURIComponent(inputStr);
 }
 
 function jsonBeautify(inputStr) {
