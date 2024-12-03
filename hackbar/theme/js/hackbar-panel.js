@@ -100,7 +100,7 @@ function loadUrl() {
             if(h.cookie){
                 cookieField.val(h.cookie);
             }
-            if(h.custom.length !== []){
+            if(h.custom.length !== 0){
                 currentHeaders = h.custom;
                 addCurrentHeaders(h.custom);
             }

@@ -1,21 +1,30 @@
 {
-	"applications":{
-        "gecko":{
-            "id":"hackbar@chewbaka"
-        }
-    },
-    "author":"Chewbaka",
+	"applications": {
+		"gecko": {
+			"id": "hackbar@chewbaka"
+		}
+	},
+	"author": "Chewbaka",
 	"description": "A HackBar for new firefox (Firefox Quantum). This addon is written in webextension and alternatives to the XUL version of original Hackbar.",
 	"manifest_version": 2,
 	"name": "HackBar V2",
-	"version": "2.5.3",
+	"version": "2.5.4",
 	"homepage_url": "https://github.com/Hack-Free/HackBar",
 	"icons": {
 		"48": "icons/icon.png"
 	},
-	"permissions": ["tabs", "activeTab", "webRequest", "webRequestBlocking", "<all_urls>", "storage"],
+	"permissions": [
+		"tabs",
+		"activeTab",
+		"webRequest",
+		"webRequestBlocking",
+		"<all_urls>",
+		"storage"
+	],
 	"devtools_page": "theme/hackbar.html",
 	"background": {
-		"scripts": ["background.js"]
+		"scripts": [
+			"background.js"
+		]
 	}
 }
