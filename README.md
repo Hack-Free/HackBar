@@ -23,7 +23,7 @@ pnpm run build           # default: TARGET=chrome (for the plugin dev tool)
 pnpm run build:firefox   # same `dist/` output, `TARGET=firefox` if you use the plugin’s browser mode
 ```
 
-The loadable package is in the `dist/` folder (load it via `about:debugging` in Firefox or “Extensions” → developer mode in Chrome). On Windows, `cross-env` is used to set `TARGET` (see [multibrowser](https://vite-plugin-web-extension.aklinker1.io/guide/supporting-multiple-browsers.html)).
+The loadable package is in the `dist/` folder.
 
 ## Development
 
